@@ -30,6 +30,9 @@
 # IntelliJ
 .idea/
 
+# VScode
+.vscode/
+
 # CMake
 build/
 
