@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
   // Feed measurements into filter, output estimated states
   Eigen::VectorXd y(m);
   std::cout << "t = " << t << ", " << "x_hat[0]: " << kf.state().transpose() << std::endl;
-  datafile << "index" << "," << "t " << ", " << "y" << "," << "x_hat" << std::endl;
+  datafile << "index" << "," << "t" << "," << "y" << "," << "x_hat" << std::endl;
   for(int i = 0; i < measurements.size(); i++) {
     t += dt;
     y << measurements[i];
