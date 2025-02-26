@@ -2,6 +2,7 @@ TARGET = kalman-test
 
 SRC_DIR = src
 BUILD_DIR = build
+DATA_DIR = data
 
 SRCS = kalman-test.cpp kalman.cpp
 OBJS = $(patsubst %.cpp, $(BUILD_DIR)/%.o, $(SRCS))
@@ -15,12 +16,11 @@ all: $(TARGET)
 # Create the build directory
 $(BUILD_DIR):
 	mkdir -pv $(BUILD_DIR)
-	echo "before build"
+	mkdir -pv $(DATA_DIR)
 
 # Compile ojbect files 
 $(BUILD_DIR)/%.o: $(SRC_DIR)/%.cpp | $(BUILD_DIR)
 	$(CXX) $(CXXFLAGS) -c $< -o $@
-	echo "before TARGET"
 
 
 # Compile and build the program
@@ -33,4 +33,5 @@ run: $(TARGET)
 
 # Remove build directory with all built files
 clean:
-	rm -rf $(BUILD_DIR) 
+	rm -rf $(BUILD_DIR)
+	rm -rf $(DATA_DIR)

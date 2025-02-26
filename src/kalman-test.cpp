@@ -6,12 +6,18 @@
  */
 
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <Eigen/Dense>
 
 #include "kalman.hpp"
 
 int main(int argc, char* argv[]) {
+
+  // Create file to output data
+  std::ofstream state_system_file("data/StateSystem.txt");
+  std::ofstream datafile("data/DataOutput.csv");
+
 
   int n = 3; // Number of states
   int m = 1; // Number of measurements
@@ -39,6 +45,12 @@ int main(int argc, char* argv[]) {
   std::cout << "R: \n" << R << std::endl;
   std::cout << "P: \n" << P << std::endl;
 
+  state_system_file << "A: \n" << A << std::endl;
+  state_system_file << "C: \n" << C << std::endl;
+  state_system_file << "Q: \n" << Q << std::endl;
+  state_system_file << "R: \n" << R << std::endl;
+  state_system_file << "P: \n" << P << std::endl;
+  
   // Construct the filter
   KalmanFilter kf(dt,A, C, Q, R, P);
 
@@ -61,17 +73,20 @@ int main(int argc, char* argv[]) {
   x0 << measurements[0], 0, -9.81;
   kf.init(t, x0);
 
+  
   // Feed measurements into filter, output estimated states
-
   Eigen::VectorXd y(m);
   std::cout << "t = " << t << ", " << "x_hat[0]: " << kf.state().transpose() << std::endl;
+  datafile << "index" << "," << "t " << ", " << "y" << "," << "x_hat" << std::endl;
   for(int i = 0; i < measurements.size(); i++) {
     t += dt;
     y << measurements[i];
     kf.update(y);
-    std::cout << "t = " << t << ", " << "y[" << i << "] = " << y.transpose()
-        << ", x_hat[" << i << "] = " << kf.state().transpose() << std::endl;
+    std::cout << "t = " << t << ", " << "y[" << i << "] = " << y.transpose() << ", x_hat[" << i << "] = " << kf.state().transpose() << std::endl;
+    datafile << i << ", " << t << ", " << y.transpose() << "," << kf.state().transpose() << std::endl;
   }
 
+  datafile.close();
+  state_system_file.close();
   return 0;
 }
